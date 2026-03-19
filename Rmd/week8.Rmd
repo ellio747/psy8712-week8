@@ -61,7 +61,7 @@ I observed a correlation of `r round(cor_test$estimate, 2)` between the Q1-Q6 an
 
 
 # Data Export
-For the data export section, I looked ahead at what variables would be required for the shiny app and only included those that were required to enable the app to function. Therefore, I only retained the timeStart, gender, and composite scale means. I saved an RDS file according to the instructions and placed into the subdirectory where the shiny app would be generated. The skinny data 
+For the data export section, I looked ahead at what variables would be required for the shiny app and only included those that were required to enable the app to function. Therefore, I only retained the timeStart, gender, and composite scale means. I saved an RDS file according to the instructions and placed into the subdirectory where the shiny app would be generated. I opted to minimize the data in the skinny dataset to maintain data integrity while safeguarding the item-level responses and treatment groups. 
 ```{r data export}
 (week8_tbl_skinny <- week8_tbl %>%
   select(timeStart, gender, x_mean, y_mean)) %>% 

@@ -1,6 +1,7 @@
 library(shiny)
 library(ggplot2)
 library(dplyr)
+library(rsconnect)
 
 ui <- fluidPage(
     titlePanel("Shiny Week 8"),
@@ -43,20 +44,18 @@ server <- function(input, output) {
       # Filtering pipeline for if the date checkbox is de-selected
       if(!input$by_date) {
         skinny_data <- skinny_data %>% 
-          filter(timeStart >= as.Date("2017-01-01"))
+          filter(timeStart >= as.POSIXct("2017-07-01")) # This filters who took before 1 July 2017
       }
       
       # Plotting function
       ggplot(skinny_data, aes(x = x_mean, y = y_mean)) +
-        geom_point(position = "jitter", width = .3) +
+        geom_point() +
         geom_smooth(method = "lm", se = se_display, color = "purple") +
-        xlim(c(1.5,4.75)) + # The limits of the x_mean were obtained by using max() and min() in the console
+        scale_x_continuous("Q1-Q6 Mean Scores") +
+        scale_y_continuous("Q8-Q10 Mean Scores") +
+        xlim(c(1.5,4.75)) + # I added limits to maintain the same dimensions of the plot in the shiny app. The limits of the x_mean were obtained by using max() and min() in the console
         ylim(c(1,4.5)) # The limits of the y_mean were obtained by using max() and min() in the console
     })
 }
 
 shinyApp(ui = ui, server = server)
-
-# Save for later
-# library(rsconnect)
-#     rsconnect::deployApp('path/to/your/app')

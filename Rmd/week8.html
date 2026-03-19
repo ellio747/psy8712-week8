@@ -828,23 +828,41 @@ the kable-created table and ggplot-created scatterplot.</p>
 </div>
 <div id="analysis" class="section level1">
 <h1>Analysis</h1>
-<pre class="r"><code>cor_test &lt;- week8_tbl  %&gt;%
-  {
-    cor.test(.$x_mean, .$y_mean)
-  }</code></pre>
-<p>I observed a correlation of 0.08. Yet the p-value of the correlation
-test is 0.56 which is non-significant, meaning that we fail to reject
-the null hypothesis that the mean correlation is zero.</p>
+<p>For the analysis section, I created a new variable
+<code>cor_test</code> in my environment which stored the results of the
+correlation test using the <code>stats</code> package’s
+<code>cor.test()</code> function. I saved this new variable so that I
+could call the results below the chunk to dynamically explain the
+resultant correlation and associated p-value from the enviornment.</p>
+<pre class="r"><code>cor_test &lt;- cor.test(week8_tbl$x_mean, week8_tbl$y_mean)
+cor_test</code></pre>
+<pre><code>## 
+##  Pearson&#39;s product-moment correlation
+## 
+## data:  week8_tbl$x_mean and week8_tbl$y_mean
+## t = 0.58309, df = 47, p-value = 0.5626
+## alternative hypothesis: true correlation is not equal to 0
+## 95 percent confidence interval:
+##  -0.2012466  0.3574248
+## sample estimates:
+##        cor 
+## 0.08474575</code></pre>
+<p>I observed a correlation of 0.08 between the Q1-Q6 and Q8-Q10
+subscales. Yet the p-value of the correlation test is 0.56 which is
+non-significant, meaning that we fail to reject the null hypothesis that
+the mean correlation is zero.</p>
 </div>
 <div id="data-export" class="section level1">
 <h1>Data Export</h1>
-<pre class="r"><code>(skinny_data &lt;- week8_tbl %&gt;%
-  mutate(
-    x_mean = rowMeans(across(q1:q6), na.rm = TRUE), 
-    y_mean = rowMeans(across(q8:q10), na.rm = TRUE)  
-  ) %&gt;% 
+<p>For the data export section, I looked ahead at what variables would
+be required for the shiny app and only included those that were required
+to enable the app to function. Therefore, I only retained the timeStart,
+gender, and composite scale means. I saved an RDS file according to the
+instructions and placed into the subdirectory where the shiny app would
+be generated. The skinny data</p>
+<pre class="r"><code>(week8_tbl_skinny &lt;- week8_tbl %&gt;%
   select(timeStart, gender, x_mean, y_mean)) %&gt;% 
-  saveRDS(file = &quot;../shiny/shiny_week8/skinny_data.rds&quot;)</code></pre>
+  saveRDS(file = &quot;../shiny/shiny_week8/week8_tbl_skinny.rds&quot;)</code></pre>
 </div>
 
 
