@@ -361,8 +361,8 @@ display: none;
 <h1>Reproducible Image and Online Resources</h1>
 <p>An image of this project as of <em>2026-03-19</em> can be accessed by
 <a href="mybinder.org">clicking this link</a>.<br />
-An interactive web app is available by <a href="link%20to%20the%20shiny%20app%20you%20create%20in%20Part%203">clicking
-this link instead</a>.</p>
+An interactive web app is available by <a href="https://ellio747.shinyapps.io/shiny_week8/">clicking this link
+instead</a>.</p>
 </div>
 <div id="script-settings-and-resources" class="section level1">
 <h1>Script Settings and Resources</h1>
@@ -859,7 +859,9 @@ be required for the shiny app and only included those that were required
 to enable the app to function. Therefore, I only retained the timeStart,
 gender, and composite scale means. I saved an RDS file according to the
 instructions and placed into the subdirectory where the shiny app would
-be generated. The skinny data</p>
+be generated. I opted to minimize the data in the skinny dataset to
+maintain data integrity while safeguarding the item-level responses and
+treatment groups.</p>
 <pre class="r"><code>(week8_tbl_skinny &lt;- week8_tbl %&gt;%
   select(timeStart, gender, x_mean, y_mean)) %&gt;% 
   saveRDS(file = &quot;../shiny/shiny_week8/week8_tbl_skinny.rds&quot;)</code></pre>
