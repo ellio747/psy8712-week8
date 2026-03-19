@@ -18,6 +18,7 @@ An interactive web app is available by [clicking this link instead](link to the 
 ```{r script settings and resources, results = "hide", echo = TRUE}
 setwd(dirname(rstudioapi::getActiveDocumentContext()$path)) # set wd
 library(tidyverse) # load libraries
+library(GGally)
 ```
 
 # Data Import and Cleaning
@@ -32,3 +33,47 @@ week8_tbl <- read_csv("../data/week3.csv") %>%
   )
 ```
 # Visualization
+```{r visualization, echo=FALSE, message=FALSE, warning=FALSE}
+glimpse(week8_tbl$q1)
+
+week8_tbl %>%  
+  mutate(
+    x_mean = rowMeans(across(q1:q6), na.rm = TRUE),
+    y_mean = rowMeans(across(q8:q10), na.rm = TRUE)
+  ) %>% 
+  ggplot(aes(x = x_mean, y = y_mean)) +
+  geom_point(position = "jitter", width = .3) +
+  geom_smooth(method = "lm", se = TRUE, color = "purple")
+
+```
+
+# Analysis
+```{r analysis}
+cor_test <- week8_tbl  %>%
+  mutate(
+    x_mean = rowMeans(across(q1:q6), na.rm = TRUE), 
+    y_mean = rowMeans(across(q8:q10), na.rm = TRUE)
+  ) %>% 
+  {
+    cor.test(.$x_mean, .$y_mean)
+  }
+```
+
+I observed a correlation of `r round(cor_test$estimate, 2)`. Yet the p-value of the correlation test is `r round(cor_test$p.value, 2)` which is non-significant, meaning that we fail to reject the null hypothesis that the mean correlation is zero. 
+
+
+# Data Export
+```{r data export}
+(skinny_data <- week8_tbl %>%
+  mutate(
+    x_mean = rowMeans(across(q1:q6), na.rm = TRUE), 
+    y_mean = rowMeans(across(q8:q10), na.rm = TRUE)  
+  ) %>% 
+  select(timeStart, gender, x_mean, y_mean)) %>% 
+  saveRDS(file = "../shiny/shiny_week8/skinny_data.rds")
+
+# Save for later
+# library(rsconnect)
+#     rsconnect::deployApp('path/to/your/app')
+```
+
