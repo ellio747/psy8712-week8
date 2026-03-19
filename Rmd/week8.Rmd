@@ -2,8 +2,15 @@
 title: "PSY 8712 Week 8 Project"
 author: "Ben Elliott"
 date: "`r Sys.Date()`"
-output: html_document
-output_dir: ../out
+output:
+  html_document:
+    theme:
+      bootswatch: cosmo
+      fg: "#0000FF"
+      bg: "#FFFFFF"
+    toc: true
+    toc_float: true
+    df_print: paged
 ---
 
 ```{r setup, include=FALSE}
@@ -15,7 +22,7 @@ An image of this project as of *`r Sys.Date()`* can be accessed by [clicking thi
 An interactive web app is available by [clicking this link instead](https://ellio747.shinyapps.io/shiny_week8/).  
 
 # Script Settings and Resources
-```{r script settings and resources, results = "hide", echo = TRUE}
+```{r script settings and resources, message = FALSE, warning = FALSE, error = FALSE, results = "hide", echo = TRUE}
 setwd(dirname(rstudioapi::getActiveDocumentContext()$path)) # set wd
 library(tidyverse) # data science tools
 library(kableExtra) # data rendering to notebook
@@ -57,7 +64,7 @@ cor_test <- cor.test(week8_tbl$x_mean, week8_tbl$y_mean)
 cor_test
 ```
 
-I observed a correlation of `r round(cor_test$estimate, 2)` between the Q1-Q6 and Q8-Q10 subscales. Yet the p-value of the correlation test is `r round(cor_test$p.value, 2)` which is non-significant, meaning that we fail to reject the null hypothesis that the mean correlation is zero. 
+I observed a correlation of `r sub("^0\\.", ".", round(cor_test$estimate, 2))` between the Q1-Q6 and Q8-Q10 subscales. Yet the p-value of the correlation test is `r sub("^0\\.", ".", round(cor_test$p.value, 2))` which is non-significant, meaning that we fail to reject the null hypothesis that the mean correlation is zero. 
 
 
 # Data Export

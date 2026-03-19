@@ -5,7 +5,7 @@ account: ellio747
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 16943102
-bundleId: 11733722
+bundleId: 11733890
 url: https://ellio747.shinyapps.io/shiny_week8/
 version: 1
 asMultiple: FALSE
