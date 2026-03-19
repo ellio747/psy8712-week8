@@ -17,59 +17,54 @@ An interactive web app is available by [clicking this link instead](link to the 
 # Script Settings and Resources
 ```{r script settings and resources, results = "hide", echo = TRUE}
 setwd(dirname(rstudioapi::getActiveDocumentContext()$path)) # set wd
-library(tidyverse) # load libraries
-library(GGally)
+library(tidyverse) # data science tools
+library(kableExtra) # data rendering to notebook
 ```
 
 # Data Import and Cleaning
-Add a short plaintext explaination here (1-2 sentences). I reverse coded based on a judgment that the q items are in Likert-style values of 1 - 5 which allowed me to mutate the variable by subtracting the item value from 6. 
+I imported and cleaned in a similar fashion that we had in previous weeks. New this week, I reverse coded Q5 based on a judgment that the q items are in Likert-style values of 1 - 5 which allowed me to mutate the variable by subtracting the item value from 6. I also created two new variables using `mutate` called `x_mean` and `y_mean` which were the `rowMeans()` of Q1-Q6 and Q8-Q10 respectively to conduct future analysis and visualizations. I muted the message about the column types to enhance the readability of the notebook. 
 ```{r data import and cleaning}
-week8_tbl <- read_csv("../data/week3.csv") %>% 
+week8_tbl <- read_csv("../data/week3.csv", show_col_types = FALSE) %>% 
   mutate(
     timeStart = ymd_hms(timeStart),
     condition = factor(condition, levels = c("A", "B", "C"), labels = c("Block A", "Block B", "Control")), 
     gender = factor(gender, levels = c("M", "F"), labels = c("Male", "Female")),
-    q5 = 6 - q5
+    q5 = 6 - q5,
+    x_mean = rowMeans(across(q1:q6), na.rm = TRUE),
+    y_mean = rowMeans(across(q8:q10), na.rm = TRUE)
   )
 ```
 # Visualization
+For visualizations, I displayed the data contained within the variables Q1-Q6, piping into `kable()` for an aesthetically pleasing visual display that provides all 49 observations. Second using the mean values generated for the two sub-scales (Q1-Q6 & Q8-Q10) I plotted using `ggplot2`, adding a linear model (OLS) smoothing function, the standard error band, and the color of the regression line using the appropriate parameters. Finally, I included appropriate axis labels. Code chunk options were modified to only ouptut the kable-created table and ggplot-created scatterplot. 
 ```{r visualization, echo=FALSE, message=FALSE, warning=FALSE}
-glimpse(week8_tbl$q1)
+week8_tbl %>% 
+  select(q1:q6) %>% 
+  kable()
 
 week8_tbl %>%  
-  mutate(
-    x_mean = rowMeans(across(q1:q6), na.rm = TRUE),
-    y_mean = rowMeans(across(q8:q10), na.rm = TRUE)
-  ) %>% 
   ggplot(aes(x = x_mean, y = y_mean)) +
-  geom_point(position = "jitter", width = .3) +
-  geom_smooth(method = "lm", se = TRUE, color = "purple")
+  geom_point() +
+  geom_smooth(method = "lm", se = TRUE, color = "purple") +
+  scale_x_continuous("Q1-Q6 Mean Scores") +
+  scale_y_continuous("Q8-Q10 Mean Scores")
 
 ```
 
 # Analysis
+For the analysis section, I created a new variable `cor_test` in my environment which stored the results of the correlation test using the `stats` package's `cor.test()` function. I saved this new variable so that I could call the results below the chunk to dynamically explain the resultant correlation and associated p-value from the enviornment. 
 ```{r analysis}
-cor_test <- week8_tbl  %>%
-  mutate(
-    x_mean = rowMeans(across(q1:q6), na.rm = TRUE), 
-    y_mean = rowMeans(across(q8:q10), na.rm = TRUE)
-  ) %>% 
-  {
-    cor.test(.$x_mean, .$y_mean)
-  }
+cor_test <- cor.test(week8_tbl$x_mean, week8_tbl$y_mean)
+cor_test
 ```
 
-I observed a correlation of `r round(cor_test$estimate, 2)`. Yet the p-value of the correlation test is `r round(cor_test$p.value, 2)` which is non-significant, meaning that we fail to reject the null hypothesis that the mean correlation is zero. 
+I observed a correlation of `r round(cor_test$estimate, 2)` between the Q1-Q6 and Q8-Q10 subscales. Yet the p-value of the correlation test is `r round(cor_test$p.value, 2)` which is non-significant, meaning that we fail to reject the null hypothesis that the mean correlation is zero. 
 
 
 # Data Export
+For the data export section, I looked ahead at what variables would be required for the shiny app and only included those that were required to enable the app to function. Therefore, I only retained the timeStart, gender, and composite scale means. I saved an RDS file according to the instructions and placed into the subdirectory where the shiny app would be generated. The skinny data 
 ```{r data export}
-(skinny_data <- week8_tbl %>%
-  mutate(
-    x_mean = rowMeans(across(q1:q6), na.rm = TRUE), 
-    y_mean = rowMeans(across(q8:q10), na.rm = TRUE)  
-  ) %>% 
+(week8_tbl_skinny <- week8_tbl %>%
   select(timeStart, gender, x_mean, y_mean)) %>% 
-  saveRDS(file = "../shiny/shiny_week8/skinny_data.rds")
+  saveRDS(file = "../shiny/shiny_week8/week8_tbl_skinny.rds")
 ```
 
