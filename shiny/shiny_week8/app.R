@@ -1,51 +1,39 @@
-#
-# This is a Shiny web application. You can run the application by clicking
-# the 'Run App' button above.
-#
-# Find out more about building applications with Shiny here:
-#
-#    https://shiny.posit.co/
-#
 
 library(shiny)
-
-# Define UI for application that draws a histogram
 ui <- fluidPage(
-
-    # Application title
-    titlePanel("Old Faithful Geyser Data"),
-
-    # Sidebar with a slider input for number of bins 
+    titlePanel("Shiny Week 8"),
     sidebarLayout(
         sidebarPanel(
-            sliderInput("bins",
-                        "Number of bins:",
-                        min = 1,
-                        max = 50,
-                        value = 30)
+            selectInput("gender",
+                        "Select Gender",
+                        choices = c("Male", "Female", "All"),
+                        selected = "All"),
+            selectInput("se_show",
+                        "Error Bar Visible",
+                        choices = c("Display Error Band", "Suprress Error Band"),
+                        selected = "Display Error Band"),
+            checkboxInput("by_date",
+                        "Include Participants Prior to July 1, 2017",
+                        value = TRUE)
         ),
-
-        # Show a plot of the generated distribution
         mainPanel(
-           plotOutput("distPlot")
+           plotOutput("corPlot")
         )
     )
 )
 
-# Define server logic required to draw a histogram
 server <- function(input, output) {
-
-    output$distPlot <- renderPlot({
-        # generate bins based on input$bins from ui.R
-        x    <- faithful[, 2]
-        bins <- seq(min(x), max(x), length.out = input$bins + 1)
-
-        # draw the histogram with the specified number of bins
-        hist(x, breaks = bins, col = 'darkgray', border = 'white',
-             xlab = 'Waiting time to next eruption (in mins)',
-             main = 'Histogram of waiting times')
+    output$corPlot <- renderPlot({
+      skinny_data <- readRDS("skinny_data.rds")
+      
+      ggplot(skinny_data, aes(x = x_mean, y = y_mean)) +
+        geom_point(position = "jitter", width = .3) +
+        geom_smooth(method = "lm", se = TRUE, color = "purple")
     })
 }
 
-# Run the application 
 shinyApp(ui = ui, server = server)
+
+# Save for later
+# library(rsconnect)
+#     rsconnect::deployApp('path/to/your/app')

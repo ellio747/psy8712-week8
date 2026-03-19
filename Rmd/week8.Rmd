@@ -71,9 +71,5 @@ I observed a correlation of `r round(cor_test$estimate, 2)`. Yet the p-value of 
   ) %>% 
   select(timeStart, gender, x_mean, y_mean)) %>% 
   saveRDS(file = "../shiny/shiny_week8/skinny_data.rds")
-
-# Save for later
-# library(rsconnect)
-#     rsconnect::deployApp('path/to/your/app')
 ```
 
