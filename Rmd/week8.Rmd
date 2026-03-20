@@ -18,7 +18,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 # Reproducible Image and Online Resources
-An image of this project as of *`r Sys.Date()`* can be accessed by [clicking this link](mybinder.org).  
+An image of this project as of *`r Sys.Date()`* can be accessed by [clicking this link](https://mybinder.org/v2/gh/ellio747/psy8712-week8.git/HEAD).  
 An interactive web app is available by [clicking this link instead](https://ellio747.shinyapps.io/shiny_week8/).  
 
 # Script Settings and Resources
